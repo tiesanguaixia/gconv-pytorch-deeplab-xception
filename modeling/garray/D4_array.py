@@ -1,10 +1,10 @@
 import numpy as np
-from garray.garray import GArray
-from garray.finitegroup import FiniteGroup
-from garray.p4m_array import P4MArray
-from garray.Z2_array import Z2Array
+from modeling.garray.garray import GArray
+from modeling.garray.finitegroup import FiniteGroup
+from modeling.garray.p4m_array import P4MArray
+from modeling.garray.Z2_array import Z2Array
 
-from garray.matrix_garray import MatrixGArray
+from modeling.garray.matrix_garray import MatrixGArray
 
 
 class D4Array(MatrixGArray):
