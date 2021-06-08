@@ -1,8 +1,8 @@
 import numpy as np
-from garray.matrix_garray import MatrixGArray
-from garray.finitegroup import FiniteGroup
-from garray.p4_array import P4Array
-from garray.Z2_array import Z2Array
+from modeling.garray.matrix_garray import MatrixGArray
+from modeling.garray.finitegroup import FiniteGroup
+from modeling.garray.p4_array import P4Array
+from modeling.garray.Z2_array import Z2Array
 
 
 class C4Array(MatrixGArray):
