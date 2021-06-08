@@ -5,12 +5,12 @@
 
 import numpy as np
 
-from garray.C4_array import C4
-from garray.D4_array import D4
-from garray.p4_array import C4_halfshift
-from gfunc.z2func_array import Z2FuncArray
-from gfunc.p4func_array import P4FuncArray
-from gfunc.p4mfunc_array import P4MFuncArray
+from modeling.garray.C4_array import C4
+from modeling.garray.D4_array import D4
+from modeling.garray.p4_array import C4_halfshift
+from modeling.gfunc.z2func_array import Z2FuncArray
+from modeling.gfunc.p4func_array import P4FuncArray
+from modeling.gfunc.p4mfunc_array import P4MFuncArray
 
 
 def make_c4_z2_indices(ksize):
