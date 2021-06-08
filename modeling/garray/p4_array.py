@@ -1,7 +1,7 @@
 
 import numpy as np
-from garray.matrix_garray import MatrixGArray
-from garray.Z2_array import Z2Array
+from modeling.garray.matrix_garray import MatrixGArray
+from modeling.garray.Z2_array import Z2Array
 
 # A transformation in p4 can be coded using three integers:
 # r in {0, 1, 2, 3}, the rotation index
