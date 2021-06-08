@@ -1,6 +1,6 @@
 
-import garray.p4m_array as p4ma
-from gfunc.gfuncarray import GFuncArray
+import modeling.garray.p4m_array as p4ma
+from modeling.gfunc.gfuncarray import GFuncArray
 
 
 class P4MFuncArray(GFuncArray):
