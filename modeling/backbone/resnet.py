@@ -2,7 +2,7 @@ import math
 import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 from modeling.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
-from gconv.splitgconv2d import P4MConvZ2, P4MConvP4M
+from modeling.gconv.splitgconv2d import P4MConvZ2, P4MConvP4M
 
 class Bottleneck(nn.Module):
     expansion = 4
