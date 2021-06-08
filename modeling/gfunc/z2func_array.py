@@ -1,6 +1,6 @@
 
-import garray.Z2_array as z2a
-from gfunc.gfuncarray import GFuncArray
+import modeling.garray.Z2_array as z2a
+from modeling.gfunc.gfuncarray import GFuncArray
 
 
 class Z2FuncArray(GFuncArray):
