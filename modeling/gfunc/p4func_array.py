@@ -1,7 +1,7 @@
 
 import numpy as np
-import garray.p4_array as p4a
-from gfunc.gfuncarray import GFuncArray
+import modeling.garray.p4_array as p4a
+from modeling.gfunc.gfuncarray import GFuncArray
 
 
 class P4FuncArray(GFuncArray):
