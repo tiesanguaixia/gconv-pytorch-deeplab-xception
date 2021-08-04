@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import torch
 import math
 from torch.nn.modules.utils import _pair
-from modeling.gconv.make_gconv_indices import *
+from gconv.make_gconv_indices import *
 
 make_indices_functions = {(1, 4): make_c4_z2_indices,
                           (4, 4): make_c4_p4_indices,
@@ -24,21 +24,21 @@ def trans_filter(w, inds):
 class SplitGConv2D(nn.Module):
 
     def __init__(self, in_channels, out_channels, kernel_size, stride=1,
-                 padding=0, dilation=1, bias=True, input_stabilizer_size=1, output_stabilizer_size=4):
+                 dilation=1, padding=0, bias=True, input_stabilizer_size=1, output_stabilizer_size=4):
         super(SplitGConv2D, self).__init__()
         assert (input_stabilizer_size, output_stabilizer_size) in make_indices_functions.keys()
         self.ksize = kernel_size
 
         kernel_size = _pair(kernel_size)
         stride = _pair(stride)
+        dilation= _pair(dilation)
         padding = _pair(padding)
-        dilation = _pair(dilation)
-
+        
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.kernel_size = kernel_size
         self.stride = stride
-        self.dilation=dilation
+        self.dilation = dilation
         self.padding = padding
         self.input_stabilizer_size = input_stabilizer_size
         self.output_stabilizer_size = output_stabilizer_size
@@ -75,7 +75,7 @@ class SplitGConv2D(nn.Module):
         input_shape = input.size()
         input = input.view(input_shape[0], self.in_channels*self.input_stabilizer_size, input_shape[-2], input_shape[-1])
 
-        y = F.conv2d(input, weight=tw, bias=None, stride=self.stride, dilation=self.dilation
+        y = F.conv2d(input, weight=tw, bias=None, stride=self.stride, dilation=self.dilation,
                         padding=self.padding)
         batch_size, _, ny_out, nx_out = y.size()
         y = y.view(batch_size, self.out_channels, self.output_stabilizer_size, ny_out, nx_out)
@@ -84,6 +84,10 @@ class SplitGConv2D(nn.Module):
             bias = self.bias.view(1, self.out_channels, 1, 1, 1)
             y = y + bias
         return y
+
+
+
+
 
 
 class P4ConvZ2(SplitGConv2D):
