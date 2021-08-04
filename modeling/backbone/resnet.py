@@ -2,26 +2,19 @@ import math
 import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 from modeling.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
-from modeling.gconv.splitgconv2d import P4MConvZ2, P4MConvP4M
+from gconv.splitgconv2d import P4MConvZ2, P4MConvP4M
 
 class Bottleneck(nn.Module):
     expansion = 4
 
     def __init__(self, inplanes, planes, stride=1, dilation=1, downsample=None, BatchNorm=None):
         super(Bottleneck, self).__init__()
-        self.conv1 = P4MConvP4M(in_planes, planes, kernel_size=1, bias=False)
+        self.conv1 = P4MConvP4M(inplanes, planes, kernel_size=1, bias=False)
         self.bn1 = nn.BatchNorm3d(planes)
-        self.conv2 = P4MConvP4M(planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
+        self.conv2 = P4MConvP4M(planes, planes, kernel_size=3, stride=stride, dilation=dilation, padding=dilation, bias=False)
         self.bn2 = nn.BatchNorm3d(planes)
         self.conv3 = P4MConvP4M(planes, self.expansion*planes, kernel_size=1, bias=False)
         self.bn3 = nn.BatchNorm3d(self.expansion*planes)
-
-        self.shortcut = nn.Sequential()
-        if stride != 1 or in_planes != self.expansion*planes:
-            self.shortcut = nn.Sequential(
-                P4MConvP4M(in_planes, self.expansion*planes, kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm3d(self.expansion*planes)
-            )
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
         self.stride = stride
@@ -65,7 +58,8 @@ class ResNet(nn.Module):
             raise NotImplementedError
 
         # Modules
-        self.conv1 = P4MConvZ2(3, n_channels[0], kernel_size=3, stride=1, padding=1, bias=False)
+        n_channels = [64, 128, 256, 512]
+        self.conv1 = P4MConvZ2(3, n_channels[0], kernel_size=7, stride=2, padding=3, bias=False)
         self.bn1 = nn.BatchNorm3d(n_channels[0])
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
@@ -84,9 +78,8 @@ class ResNet(nn.Module):
         downsample = None
         if stride != 1 or self.inplanes != planes * block.expansion:
             downsample = nn.Sequential(
-                nn.Conv2d(self.inplanes, planes * block.expansion,
-                          kernel_size=1, stride=stride, bias=False),
-                BatchNorm(planes * block.expansion),
+                P4MConvP4M(self.inplanes, planes * block.expansion, kernel_size=1, stride=stride, bias=False),
+                nn.BatchNorm3d(planes * block.expansion)
             )
 
         layers = []
@@ -101,9 +94,8 @@ class ResNet(nn.Module):
         downsample = None
         if stride != 1 or self.inplanes != planes * block.expansion:
             downsample = nn.Sequential(
-                nn.Conv2d(self.inplanes, planes * block.expansion,
-                          kernel_size=1, stride=stride, bias=False),
-                BatchNorm(planes * block.expansion),
+                P4MConvP4M(self.inplanes, planes * block.expansion, kernel_size=1, stride=stride, bias=False),
+                nn.BatchNorm3d(planes * block.expansion)
             )
 
         layers = []
