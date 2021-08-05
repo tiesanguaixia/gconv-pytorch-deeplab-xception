@@ -45,12 +45,12 @@ class DeepLab(nn.Module):
         for i in range(len(modules)):
             for m in modules[i].named_modules():
                 if self.freeze_bn:
-                    if isinstance(m[1], P4MConvP4M):
+                    if isinstance(m[1], nn.Conv2d):
                         for p in m[1].parameters():
                             if p.requires_grad:
                                 yield p
                 else:
-                    if isinstance(m[1], P4MConvP4M) or isinstance(m[1], SynchronizedBatchNorm3d) \
+                    if isinstance(m[1], nn.Conv2d) or isinstance(m[1], SynchronizedBatchNorm3d) \
                             or isinstance(m[1], nn.BatchNorm3d):
                         for p in m[1].parameters():
                             if p.requires_grad:
@@ -61,12 +61,12 @@ class DeepLab(nn.Module):
         for i in range(len(modules)):
             for m in modules[i].named_modules():
                 if self.freeze_bn:
-                    if isinstance(m[1], nn.P4MConvP4M):
+                    if isinstance(m[1], nn.Conv2d):
                         for p in m[1].parameters():
                             if p.requires_grad:
                                 yield p
                 else:
-                    if isinstance(m[1], nn.P4MConvP4M) or isinstance(m[1], SynchronizedBatchNorm3d) \
+                    if isinstance(m[1], nn.Conv2d) or isinstance(m[1], SynchronizedBatchNorm3d) \
                             or isinstance(m[1], nn.BatchNorm3d):
                         for p in m[1].parameters():
                             if p.requires_grad:
