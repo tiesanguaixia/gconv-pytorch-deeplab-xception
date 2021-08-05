@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from modeling.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
+from modeling.sync_batchnorm.batchnorm import SynchronizedBatchNorm3d
 from modeling.aspp import build_aspp
 from modeling.decoder import build_decoder
 from modeling.backbone import build_backbone
@@ -14,9 +14,9 @@ class DeepLab(nn.Module):
             output_stride = 8
 
         if sync_bn == True:
-            BatchNorm = SynchronizedBatchNorm2d
+            BatchNorm = SynchronizedBatchNorm3d
         else:
-            BatchNorm = nn.BatchNorm2d
+            BatchNorm = nn.BatchNorm3d
 
         self.backbone = build_backbone(backbone, output_stride, BatchNorm)
         self.aspp = build_aspp(backbone, output_stride, BatchNorm)
@@ -34,9 +34,9 @@ class DeepLab(nn.Module):
 
     def freeze_bn(self):
         for m in self.modules():
-            if isinstance(m, SynchronizedBatchNorm2d):
+            if isinstance(m, SynchronizedBatchNorm3d):
                 m.eval()
-            elif isinstance(m, nn.BatchNorm2d):
+            elif isinstance(m, nn.BatchNorm3d):
                 m.eval()
 
     def get_1x_lr_params(self):
@@ -49,8 +49,8 @@ class DeepLab(nn.Module):
                             if p.requires_grad:
                                 yield p
                 else:
-                    if isinstance(m[1], nn.Conv2d) or isinstance(m[1], SynchronizedBatchNorm2d) \
-                            or isinstance(m[1], nn.BatchNorm2d):
+                    if isinstance(m[1], nn.Conv2d) or isinstance(m[1], SynchronizedBatchNorm3d) \
+                            or isinstance(m[1], nn.BatchNorm3d):
                         for p in m[1].parameters():
                             if p.requires_grad:
                                 yield p
@@ -65,8 +65,8 @@ class DeepLab(nn.Module):
                             if p.requires_grad:
                                 yield p
                 else:
-                    if isinstance(m[1], nn.Conv2d) or isinstance(m[1], SynchronizedBatchNorm2d) \
-                            or isinstance(m[1], nn.BatchNorm2d):
+                    if isinstance(m[1], nn.Conv2d) or isinstance(m[1], SynchronizedBatchNorm3d) \
+                            or isinstance(m[1], nn.BatchNorm3d):
                         for p in m[1].parameters():
                             if p.requires_grad:
                                 yield p
