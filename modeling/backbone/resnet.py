@@ -62,7 +62,7 @@ class ResNet(nn.Module):
         self.conv1 = P4MConvZ2(3, n_channels[0], kernel_size=7, stride=2, padding=3, bias=False)
         self.bn1 = nn.BatchNorm3d(n_channels[0])
         self.relu = nn.ReLU(inplace=True)
-        self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
 
         self.layer1 = self._make_layer(block, 64, layers[0], stride=strides[0], dilation=dilations[0], BatchNorm=BatchNorm)
         self.layer2 = self._make_layer(block, 128, layers[1], stride=strides[1], dilation=dilations[1], BatchNorm=BatchNorm)
@@ -112,7 +112,7 @@ class ResNet(nn.Module):
         x = self.conv1(input)
         x = self.bn1(x)
         x = self.relu(x)
-        x = self.maxpool(x)
+        x = self.avgpool(x)
 
         x = self.layer1(x)
         low_level_feat = x
