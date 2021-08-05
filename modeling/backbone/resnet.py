@@ -1,7 +1,7 @@
 import math
 import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
-from modeling.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
+from modeling.sync_batchnorm.batchnorm import SynchronizedBatchNorm3d
 from modeling.gconv.splitgconv2d import P4MConvZ2, P4MConvP4M
 
 class Bottleneck(nn.Module):
@@ -123,13 +123,13 @@ class ResNet(nn.Module):
 
     def _init_weight(self):
         for m in self.modules():
-            if isinstance(m, nn.Conv2d):
+            if isinstance(m, P4MConvP4M):
                 n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
                 m.weight.data.normal_(0, math.sqrt(2. / n))
-            elif isinstance(m, SynchronizedBatchNorm2d):
+            elif isinstance(m, SynchronizedBatchNorm3d):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
-            elif isinstance(m, nn.BatchNorm2d):
+            elif isinstance(m, nn.BatchNorm3d):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
 
@@ -143,7 +143,7 @@ class ResNet(nn.Module):
         state_dict.update(model_dict)
         self.load_state_dict(state_dict)
 
-def ResNet101(output_stride, BatchNorm, pretrained=True):
+def ResNet101(output_stride, BatchNorm, pretrained=False):
     """Constructs a ResNet-101 model.
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
